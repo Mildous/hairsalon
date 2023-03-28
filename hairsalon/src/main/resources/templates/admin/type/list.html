@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+  <style>
+    .fieldError {
+      color: #bd2130;
+    }
+  </style>
+</th:block>
+
+<!-- JS -->
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+
+    function deleteType(typeId) {
+      if(confirm('정말로 삭제하시겠습니까?')) {
+        location.href = "/admin/type/del/" + typeId;
+      }
+    }
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <div class="d-flex justify-content-end my-2">
+    <a href="/admin/type/new" class="btn btn-primary">등록</a>
+  </div>
+  <form action="/admin/type/list" role="form" method="get" th:object="${types}">
+    <table class="table table-striped table-dark text-center">
+      <thead>
+      <tr>
+        <th scope="col" class="col-md-2">#</th>
+        <th scope="col" class="col-md-3">시술명</td>
+        <th scope="col" class="col-md-2">성별</th>
+        <th scope="col" class="col-md-2">소요시간</th>
+        <th scope="col" class="col-md-3"></th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr th:each="type, typeStat : ${types}">
+            <th scope="row" th:text="${typeStat.count}"></th>
+            <td th:text="${type.typeName}"></td>
+            <td th:text="${type.typeGender == T(com.ubn.hairsalon.member.constant.Gender).MALE} ? '남성' : '여성'"></td>
+            <td th:text="${type.takeMinutes + '분'}"></td>
+            <td>
+              <a th:href="'/admin/type/' + ${type.id}" class="btn btn-outline-success mx-2">수정</a>
+              <a th:onclick="'javascript:deleteType(' + ${type.id} + ');'" class="btn btn-outline-danger">삭제</a>
+            </td>
+        </tr>
+        <tr th:if="${types.isEmpty()}">
+          <td colspan="5" class="text-center">등록된 시술이 없습니다..</td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+
+</div>
+
+</html>

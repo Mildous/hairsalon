@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+    function deleteReserved(id) {
+      if(confirm('정말로 예약을 취소하시겠습니까?')) {
+        location.href = "/members/reserved/del/" + id;
+      }
+    }
+    function loadModalContent(reserveId) {
+      $.get('/review/new/' + reserveId, function(response) {
+        $('#modal-container').html(response);
+        $('#reviewModal').modal('show');
+      });
+    }
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <div id="modal-container"></div>
+  <h4 class="mb-4">예약정보</h4>
+  <form action="/members/reserved/info" role="form" method="get" th:object="${reserve}">
+    <input type="hidden" id="reserveId" th:value="${reserve.id}">
+    <table class="table table-borderless table-dark">
+      <tbody>
+      <tr>
+        <th scope="row" class="col-md-2">상태</th>
+        <td>예약 <span th:text="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED ? '확정' : (reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING ? '대기' : '취소')}"></span>,
+          시술 <span th:text="${reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED ? '완료' : (reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING ? '대기' : '취소')}"></span>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">예약일</th>
+        <td th:text="${#temporals.format(reserve.rsvDate, 'yyyy년 MM월 dd일')}"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">시간</th>
+        <td th:text="${reserve.rsvStartTime}"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">시술명</th>
+        <td th:text="${reserve.member.gender == T(com.ubn.hairsalon.member.constant.Gender).MALE ? '남성' : '여성' } + ' ' + ${reserve.type.typeName} + ' [' + ${reserve.type.takeMinutes} + '분]'"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">이름</th>
+        <td th:text="${reserve.member.name}"></td>
+      </tr>
+      <tr>
+        <th scope="row">연락처</th>
+        <td th:text="${#strings.substring(reserve.member.phone, 0, 3) + '-' +
+                                #strings.substring(reserve.member.phone, 3, 7) + '-' +
+                                #strings.substring(reserve.member.phone, 7)}"></td>
+      </tr>
+      <tr>
+        <th scope="row">생년월일</th>
+        <td th:text="${#temporals.format(reserve.member.birth, 'yyyy년 MM월 dd일')}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block update-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}" th:href="'/members/reserved/' + ${reserve.id}">수정</button>
+    <button type="button" class="btn btn-light btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}" th:onclick="'javascript:deleteReserved(' + ${reserve.id} + ');'">취소</button>
+    <button type="button" class="btn btn-success btn-lg btn-block review-btn"
+      th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
+      reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
+      reserve.reviewYn eq 'N'}" th:onclick="'javascript:loadModalContent(' + ${reserve.id} + ');'">리뷰남기기</button>
+    <button type="button" class="btn btn-success btn-lg btn-block review-btn"
+            th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
+      reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
+      reserve.reviewYn eq 'Y'}" th:onclick="'javascript:loadModalReviewInfo(' + ${review.id} +  ');'">나의 리뷰 보기</button>
+    <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/members/reserved/list'|">목록으로</button>
+  </form>
+</div>
+
+</html>

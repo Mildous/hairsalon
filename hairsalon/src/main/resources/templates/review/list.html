@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <style>
+    .content {
+      margin: 100px 0 100px 0;
+    }
+    .custom-rating {
+      font-size: 18px;
+    }
+    .fa-star {
+      color: #ccc;
+    }
+    .fa-star.checked {
+      color: gold;
+    }
+    .fa-ellipsis-v {
+      color: #777;
+    }
+    .fa-beat-fade {
+      animation: beat-fade 1s ease-in-out infinite;
+    }
+    @keyframes beat-fade {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      $("#searchBtn").on("click", function(e) {
+        e.preventDefault();
+        page(0);
+      });
+      // 색칠된 별 아이콘에 checked 클래스를 추가
+      const stars = document.querySelectorAll('.fa-star');
+      stars.forEach(star => {
+        if (star.classList.contains('fas')) {
+          star.classList.add('checked');
+        }
+      });
+    });
+
+    function page(page) {
+      var type = $("#type").val();
+      var gender = $("#gender").val();
+      var searchBy = $("#by").val();
+      var searchQuery = $("#query").val();
+
+      location.href="/review/list/" + page
+              + "?type=" + type
+              + "&gender=" + gender
+              + "&by=" + searchBy
+              + "&query=" + searchQuery;
+    }
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+
+  <div class="card border-light mb-3 mw-100 mh-100">
+    <div class="card-header" id="layout-card">
+      <form action="/review/list" role="form" method="get" th:object="${reviews}">
+        <div class="form-inline d-flex bd-highlight my-3" th:object="${reviewSearchDto}">
+          <select th:field="*{type}" class="form-control p-2 mr-2 flex-fill bd-highlight">
+            <option value="">시술명</option>
+            <option value="커트">커트</option>
+            <option value="염색">염색</option>
+            <option value="펌">펌</option>
+          </select>
+          <select th:field="*{gender}" class="form-control p-2 mr-2 flex-fill bd-highlight">
+            <option value="">성별</option>
+            <option value="MALE">남성</option>
+            <option value="FEMALE">여성</option>
+          </select>
+          <select th:field="*{by}" class="form-control p-2 mr-2 flex-fill bd-highlight">
+            <option value="name">제목</option>
+            <option value="phone">내용</option>
+          </select>
+          <input th:field="*{query}" type="text" class="form-control p-2 mr-2 flex-fill bd-highlight" placeholder="검색어를 입력하세요">
+          <button id="searchBtn" type="submit" class="btn btn-success">검색</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-body">
+      <div class="row row-cols-1 row-cols-md-3">
+        <th:block th:each="review, status: ${reviews.getContent()}">
+          <div class="col mb-4">
+            <div class="card text-dark" style="max-width: 18rem;">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <div class="custom-rating">
+                    <i th:each="i : ${#numbers.sequence(1, 5)}"
+                       th:classappend="${review.rating >= i ? 'fas fa-star' : 'far fa-star'}"></i>
+                  </div>
+                  <div class="custom-badge">
+                    <span th:switch="${review.gender.toString()}" class="badge badge-primary">
+                      <span th:case="MALE">남성</span>
+                      <span th:case="FEMALE">여성</span>
+                    </span>
+                    <span th:switch="${review.typeName}" class="badge badge-success">
+                      <!-- CUT, PERM, DYE -->
+                      <span th:case="커트">커트</span>
+                      <span th:case="펌">펌</span>
+                      <span th:case="염색">염색</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <img th:src="${review.imgUrl}" class="card-img-top" th:alt="${review.title}" height="300">
+              <div class="card-body">
+                <h5 class="card-title">[[${review.title}]]</h5>
+              </div>
+              <div class="card-footer d-flex justify-content-between">
+                <small class="text-muted" th:text="${review.writtenTime}"></small>
+                <i class="fas fa-ellipsis-v"
+                   th:onmouseover="'this.classList.add(\'fa-beat-fade\')'"
+                   th:onmouseout="'this.classList.remove(\'fa-beat-fade\')'"></i>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+    <div class="card-footer">
+        <div th:with="start=${(reviews.number/maxPage)*maxPage + 1}, end=(${(reviews.totalPages == 0) ? 1 : (start + (maxPage - 1) < reviews.totalPages ? start + (maxPage - 1) : reviews.totalPages)})">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${reviews.first} ? 'disabled'">
+              <a th:onclick="'javascript:page(' + ${reviews.number - 1} + ')'" aria-label='previous' class="page-link">
+                <span aria-hidden="true">Previous</span>
+              </a>
+            </li>
+            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${reviews.number eq page - 1}?'active':''">
+              <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+            </li>
+            <li class="page-item" th:classappend="${reviews.last}?'disabled'">
+              <a th:onclick="'javascript:page(' + ${reviews.number + 1} + ')'" aria-label="Next" class="page-link">
+                <span aria-hidden="true">Next</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://thymeleaf.org/extras/spring-security">
+
+<div th:fragment="header">
+      <div class="inner">
+          <h3 class="masthead-brand"><a style="text-decoration: none;" href="/">André Salon</a></h3>
+        <nav class="nav nav-masthead justify-content-center">
+            <span><a class="nav-link mx-3" id="home" href="/" th:classappend="${now} == 'home' ? 'active' : ''">Home</a></span>
+            <span><a class="nav-link mx-3" href="/review/list" th:classappend="${now} == 'review' ? 'active' : ''">Review</a></span>
+            <span sec:authorize="hasAnyAuthority('ROLE_USER')"><a class="nav-link mx-3" href="/reserve/new" th:classappend="${now} == 'reserve' ? 'active' : ''">Reservation</a></span>
+            <span sec:authorize="hasAnyAuthority('ROLE_USER')"><a class="nav-link mx-3" href="/members/profile/info" th:classappend="${now} == 'profile' ? 'active' : ''">Profile</a></span>
+            <span sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="nav-link mx-3" href="/admin/reserved/list" th:classappend="${now} == 'reserved' ? 'active' : ''">Reserved</a></span>
+            <span sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="nav-link mx-3" href="/admin/type/list" th:classappend="${now} == 'type' ? 'active' : ''">Type</a></span>
+            <span sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="nav-link mx-3" href="/admin/customer/list" th:classappend="${now} == 'customer' ? 'active' : ''">Customer</a></span>
+            <span sec:authorize="isAnonymous()"><a class="nav-link mx-3" href="/members/login" th:classappend="${now} == 'login' ? 'active' : ''">Login</a></span>
+            <span sec:authorize="isAuthenticated()"><a class="nav-link mx-3" href="/members/logout">Logout</a></span>
+        </nav>
+      </div>
+</div>
+
+</html>

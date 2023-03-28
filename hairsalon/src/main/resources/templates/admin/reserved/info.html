@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
+      var id = $("#reserveId").val();
+
+      $('.accept-btn, .reject-btn').click(function () {
+        var status = $(this).hasClass('accept-btn') ? 'COMPLETED' : 'CANCELLED';
+        var message = $(this).hasClass('accept-btn') ? "예약을 수락하시겠습니까?" : "예약을 거절하시겠습니까?";
+        if (confirm(message)) {
+          $.ajax({
+            type: "POST",
+            url: "/admin/reserved/info/" + id + "/rStat",
+            data: {reserveStatus: status},
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+            },
+            success: function () {
+              alert("정상적으로 처리되었습니다.");
+              location.reload();
+            },
+            error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                alert('권한이 없습니다.');
+                location.href = '/';
+              } else {
+                alert(jqXHR.responseText);
+              }
+            }
+          });
+        }
+      });
+      $('.complete-btn, .cancel-btn').click(function () {
+        var status = $(this).hasClass('complete-btn') ? 'COMPLETED' : 'CANCELLED';
+        var message = $(this).hasClass('complete-btn') ? "시술 완료 처리하시겠습니까?" : "시술 취소 처리하시겠습니까?";
+        if (confirm(message)) {
+          $.ajax({
+            type: "POST",
+            url: "/admin/reserved/info/" + id + "/sStat",
+            data: {serviceStatus: status},
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+            },
+            success: function () {
+              alert("정상적으로 처리되었습니다.");
+              location.reload();
+            },
+            error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                alert('권한이 없습니다.');
+                location.href = '/';
+              } else {
+                alert(jqXHR.responseText);
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+
+  <h4 class="mb-4">예약정보</h4>
+  <form action="/admin/reserved/info" role="form" method="get" th:object="${reserve}">
+    <input type="hidden" id="reserveId" th:value="${reserve.id}">
+    <table class="table table-borderless table-dark">
+      <tbody>
+      <tr>
+        <th scope="row" class="col-md-2">상태</th>
+        <td>예약 <span th:text="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED ? '확정' : (reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING ? '대기' : '취소')}"></span>,
+          시술 <span th:text="${reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED ? '완료' : (reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING ? '대기' : '취소')}"></span>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">예약일</th>
+        <td th:text="${#temporals.format(reserve.rsvDate, 'yyyy년 MM월 dd일')}"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">시간</th>
+        <td th:text="${reserve.rsvStartTime}"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">시술명</th>
+        <td th:text="${reserve.member.gender == T(com.ubn.hairsalon.member.constant.Gender).MALE ? '남성' : '여성' } + ' ' + ${reserve.type.typeName} + ' [' + ${reserve.type.takeMinutes} + '분]'"></td>
+      </tr>
+      <tr>
+        <th scope="row" class="col-md-2">이름</th>
+        <td th:text="${reserve.member.name}"></td>
+      </tr>
+      <tr>
+        <th scope="row">연락처</th>
+        <td th:text="${#strings.substring(reserve.member.phone, 0, 3) + '-' +
+                                #strings.substring(reserve.member.phone, 3, 7) + '-' +
+                                #strings.substring(reserve.member.phone, 7)}"></td>
+      </tr>
+      <tr>
+        <th scope="row">생년월일</th>
+        <td th:text="${#temporals.format(reserve.member.birth, 'yyyy년 MM월 dd일')}"></td>
+      </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary btn-lg btn-block accept-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">수락</button>
+    <button type="button" class="btn btn-danger btn-lg btn-block reject-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">거절</button>
+    <button type="button" class="btn btn-success btn-lg btn-block complete-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">시술완료</button>
+    <button type="button" class="btn btn-danger btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">시술취소</button>
+    <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/admin/reserved/list'|">목록으로</button>
+  </form>
+
+</div>
+
+</html>

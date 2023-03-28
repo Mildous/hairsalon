@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+    function deleteReserved(id) {
+      if(confirm('정말로 예약을 취소하시겠습니까?')) {
+        location.href = "/members/reserved/del/" + id;
+      }
+    }
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" href="/members/profile/info">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="/members/reserved/list">Reserved</a>
+    </li>
+  </ul>
+
+  <form action="/members/reserved/list" role="form" method="get" th:object="${reserves}">
+
+    <table class="table table-striped table-dark text-center">
+      <thead>
+      <tr>
+        <th scope="col" class="col-md-2">#</th>
+        <th scope="col" class="col-md-2">예약일</th>
+        <th scope="col" class="col-md-2">시간</th>
+        <th scope="col" class="col-md-2">시술명</th>
+        <th scope="col" class="col-md-2">예약상태</th>
+        <th scope="col" class="col-md-2"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="reserve, reserveStat : ${reserves}">
+        <th scope="row" th:text="${reserveStat.count}"></th>
+        <td th:text="${reserve.rsvDate}"></td>
+        <td th:text="${reserve.rsvStartTime}"></td>
+        <td th:text="${reserve.type.getTypeName()}"></td>
+        <td th:text="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING ? '대기' : (reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED ? '확정' : '취소')}"></td>
+        <td>
+          <a th:href="'/members/reserved/info/' + ${reserve.id}" class="btn btn-outline-light">정보</a>
+        </td>
+      </tr>
+      <tr th:if="${reserves.isEmpty()}">
+        <td colspan="6" class="text-center">예약 내역이 없습니다..</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div th:with="start=${(reserves.number/maxPage)*maxPage + 1}, end=(${(reserves.totalPages == 0) ? 1 : (start + (maxPage - 1) < reserves.totalPages ? start + (maxPage - 1) : reserves.totalPages)})">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${reserves.first} ? 'disabled'">
+          <a th:onclick="'javascript:page(' + ${reserves.number - 1} + ')'" aria-label='previous' class="page-link">
+            <span aria-hidden="true">Previous</span>
+          </a>
+        </li>
+        <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${reserves.number eq page - 1}?'active':''">
+          <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+        </li>
+        <li class="page-item" th:classappend="${reserves.last}?'disabled'">
+          <a th:onclick="'javascript:page(' + ${reserves.number + 1} + ')'" aria-label="Next" class="page-link">
+            <span aria-hidden="true">Next</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </form>
+
+</div>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout}">
+
+<th:block layout:fragment="css">
+	<style>
+        #mainBox {
+            margin-top: 10%;
+        }
+	</style>
+</th:block>
+
+<div layout:fragment="content" class="inner cover text-center">
+	<div id="mainBox">
+		<img class="mb-2" th:src="@{/img/hair-salon.jpg}" alt="salon" width="50%" height="50%">
+		<h1 class="cover-heading">Please use after reservation.</h1>
+		<p class="lead">Our salon operates on a reservation basis, so please use it after making a reservation on this site.
+			<br>
+			If you have difficulty making a reservation, please call the salon.</p>
+		<p class="lead">
+			<a href="/members/login" class="btn btn-lg btn-secondary" sec:authorize="isAnonymous()">Login now</a>
+			<a href="/reserve/new" class="btn btn-lg btn-secondary" sec:authorize="isAuthenticated()">Reserve now</a>
+		</p>
+	</div>
+</div>
+
+</html>

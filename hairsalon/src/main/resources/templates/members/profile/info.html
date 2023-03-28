@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- CSS-->
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="/members/profile/info">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/members/reserved/list">Reserved</a>
+    </li>
+  </ul>
+
+  <form action="/members/profile/list" role="form" method="get" th:object="${profile}">
+    <table class="table table-borderless table-dark">
+      <tbody>
+      <tr>
+        <th scope="row" class="col-md-2">Name</th>
+        <td th:text="${profile.name}"></td>
+      </tr>
+      <tr>
+        <th scope="row">Email</th>
+        <td th:text="${profile.email}"></td>
+      </tr>
+      <tr>
+        <th scope="row">Phone</th>
+        <td th:text="${#strings.substring(profile.phone, 0, 3) + '-' +
+                                #strings.substring(profile.phone, 3, 7) + '-' +
+                                #strings.substring(profile.phone, 7)}"></td>
+      </tr>
+      <tr>
+        <th scope="row">Birth</th>
+        <td th:text="${#temporals.format(profile.birth, 'yyyy년 MM월 dd일')}"></td>
+      </tr>
+      <tr>
+        <th scope="row">Gender</th>
+        <td th:text="${profile.gender == T(com.ubn.hairsalon.member.constant.Gender).MALE} ? '남성' : '여성'"></td>
+      </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary btn-lg btn-block" th:onclick="|location.href='/members/profile/edit'|">회원정보 수정</button>
+    <button type="button" class="btn btn-secondary btn-lg btn-block" th:onclick="|location.href='/members/withdraw/form'|">회원 탈퇴</button>
+  </form>
+
+</div>
+
+</html>
