@@ -58,12 +58,12 @@ public class MemberReservedController {
 
     public static boolean getMembersReserved(@PathVariable("id") Long id, Model model, ReserveRepository reserveRepository) {
         Optional<Reserve> reserveOptional = reserveRepository.findById(id);
-        Reserve reserve = reserveOptional.isPresent() ? reserveOptional.get() : null;
-        if(reserve == null) {
+        if (!reserveOptional.isPresent()) {
             // reserve 객체가 존재하지 않는 경우의 처리
             model.addAttribute("errorMessage", "존재하지 않는 예약입니다.");
             return true;
         }
+        Reserve reserve = reserveOptional.get();
         model.addAttribute("reserve", reserve);
         return false;
     }

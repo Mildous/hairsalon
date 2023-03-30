@@ -8,7 +8,6 @@ import com.ubn.hairsalon.reserve.entity.Reserve;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +44,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<Reserve> reserves;
 
     // Only admin
@@ -70,5 +69,18 @@ public class Member extends BaseEntity {
         this.gender = memberFormDto.getGender();
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         this.password = password;
+    }
+
+    public void withdraw(String reason) {
+        this.phone = null;
+        this.birth = null;
+        this.gender = null;
+        this.password = null;
+        this.role = Role.WITHDRAW;
+
+        // Remove personal data from all reserve entities
+        for (Reserve reserve : reserves) {
+            reserve.removePersonalData();
+        }
     }
 }

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- CSS-->
+<th:block th:fragment="css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <style>
+        .custom-rating {
+            font-size: 18px;
+        }
+        .fa-star {
+            color: #ccc;
+        }
+        .fa-star.checked {
+            color: gold;
+        }
+    </style>
+</th:block>
+
+<!-- JS -->
+<th:block th:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            // 색칠된 별 아이콘에 checked 클래스를 추가
+            const stars = document.querySelectorAll('.fa-star');
+            stars.forEach(star => {
+                if (star.classList.contains('fas')) {
+                    star.classList.add('checked');
+                }
+            });
+        });
+    </script>
+</th:block>
+
+<div class="modal fade" id="reviewThumbnailDetailModal" tabindex="-1" aria-labelledby="reviewThumbnailDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewThumbnailDetailModalLabel">Reviews</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" id="reviewDetail" name="reviewDetail" th:object="${review}">
+            <div class="modal-body">
+                <input type="hidden" id="reviewId" th:value="${review.id}">
+                <!-- 이미지 -->
+                <div class="row p-3">
+                    <div th:each="reviewImg : ${review.reviewImgList}" class="card-group">
+                        <div th:if="${not #strings.isEmpty(reviewImg.imgUrl)}" style="padding-left: 0; padding-right: 0;" class="card col-4 no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative mw-50 mh-100">
+                            <img th:src="${reviewImg.imgUrl}" width="100%">
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-3 no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col-8 d-flex flex-column position-static">
+                        <div class="custom-badge">
+                            <span th:switch="${review.reserve.member.gender.toString()}" class="badge badge-primary">
+                              <span th:case="MALE">남성</span>
+                              <span th:case="FEMALE">여성</span>
+                            </span>
+                            <span th:switch="${review.reserve.type.typeName}" class="badge badge-success">
+                              <!-- CUT, PERM, DYE -->
+                              <span th:case="커트">커트</span>
+                              <span th:case="펌">펌</span>
+                              <span th:case="염색">염색</span>
+                            </span>
+                        </div>
+                        <small class="mb-1 text-muted" th:text="${#temporals.format(review.reserve.rsvDate, 'yyyy년 MM월 dd일')} + ' 예약'">Nov 12</small>
+                        <h3 class="mb-0" th:text="${review.title}"></h3>
+                    </div>
+                    <div class="col-4 d-none d-lg-block text-right">
+                        <div class="custom-rating">
+                            <i th:each="i : ${#numbers.sequence(1, 5)}"
+                               th:classappend="${review.rating >= i ? 'fas fa-star' : 'far fa-star'}"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-none d-lg-block">
+                        <br><br>
+                        <p class="card-text mb-auto text-muted" style="white-space: pre-wrap;" th:utext="${review.content}"></p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div class="h6" th:text="${#temporals.format(review.createdDate, 'MMMM dd, yyyy', 'en')} + ' by ' + ${#strings.substring(review.reserve.member.email, 0, #strings.indexOf(review.reserve.member.email, '@'))}"></div>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+      </div>
+    </div>
+</div>
+
+
+</html>

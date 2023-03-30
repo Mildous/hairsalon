@@ -4,6 +4,12 @@ import com.ubn.hairsalon.admin.dto.MemberSearchDto;
 import com.ubn.hairsalon.member.dto.MemberFormDto;
 import com.ubn.hairsalon.member.entity.Member;
 import com.ubn.hairsalon.member.repository.MemberRepository;
+import com.ubn.hairsalon.reserve.entity.Reserve;
+import com.ubn.hairsalon.reserve.service.ReserveService;
+import com.ubn.hairsalon.withdraw.dto.WithdrawFormDto;
+import com.ubn.hairsalon.withdraw.entity.Withdraw;
+import com.ubn.hairsalon.withdraw.repository.WithdrawRepository;
+import com.ubn.hairsalon.withdraw.service.WithdrawService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +29,8 @@ import javax.persistence.EntityNotFoundException;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final WithdrawService withdrawService;
+    private final ReserveService reserveService;
 
     public Member saveMember(Member member) {
         validateDuplicateMember(member);
@@ -50,7 +58,6 @@ public class MemberService implements UserDetailsService {
                 .roles(member.getRole().toString())
                 .build();
     }
-
 
     // Update..
     @Transactional(readOnly = true)
@@ -84,4 +91,21 @@ public class MemberService implements UserDetailsService {
         }
     }
 
+    @Transactional
+    public void withdrawMember(Long memberId, String reason) {
+        Member member = memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
+        WithdrawFormDto withdrawFormDto = new WithdrawFormDto();
+        withdrawFormDto.setGender(member.getGender());
+        withdrawFormDto.setBirth(String.valueOf(member.getBirth()));
+        withdrawFormDto.setReason(reason);
+        Withdraw withdraw = Withdraw.createWithdrawMember(withdrawFormDto);
+
+        member.withdraw(reason);
+        withdrawService.saveWithdrawMember(withdraw);
+
+        // Remove Personal Data from Reserves
+        for (Reserve reserve : member.getReserves()) {
+            reserve.removePersonalData();
+        }
+    }
 }

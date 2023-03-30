@@ -31,6 +31,12 @@
         $('#reviewModal').modal('show');
       });
     }
+    function loadModalReviewInfo(reserveId) {
+      $.get('/review/info/' + reserveId, function(response) {
+        $('#modal-container').html(response);
+        $('#reviewModal').modal('show');
+      });
+    }
   </script>
 </th:block>
 
@@ -81,11 +87,11 @@
     <button type="button" class="btn btn-success btn-lg btn-block review-btn"
       th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
       reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
-      reserve.reviewYn eq 'N'}" th:onclick="'javascript:loadModalContent(' + ${reserve.id} + ');'">리뷰남기기</button>
+      reserve.reviewYn == 'N'}" th:onclick="'javascript:loadModalContent(' + ${reserve.id} + ');'">리뷰남기기</button>
     <button type="button" class="btn btn-success btn-lg btn-block review-btn"
             th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
       reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
-      reserve.reviewYn eq 'Y'}" th:onclick="'javascript:loadModalReviewInfo(' + ${review.id} +  ');'">나의 리뷰 보기</button>
+      reserve.reviewYn == 'Y'}" th:onclick="'javascript:loadModalReviewInfo(' + ${reserve.id} + ');'">나의 리뷰 보기</button>
     <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/members/reserved/list'|">목록으로</button>
   </form>
 </div>

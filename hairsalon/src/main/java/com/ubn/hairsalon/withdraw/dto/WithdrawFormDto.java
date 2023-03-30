@@ -17,7 +17,7 @@ public class WithdrawFormDto {
 
     private Gender gender;
 
-    private LocalDate birth;
+    private String birth;
 
     @NotEmpty(message = "탈퇴사유는 필수 입력사항입니다.")
     @Length(min=10, max=300, message = "탈퇴사유는 10자 이상, 300자 이하로 입력해주세요.")

@@ -32,7 +32,7 @@ public class Withdraw extends BaseEntity {
         Withdraw withdraw = new Withdraw();
         withdraw.setEmail(withdrawFormDto.getEmail());
         withdraw.setGender(withdrawFormDto.getGender());
-        withdraw.setBirth(withdrawFormDto.getBirth());
+        withdraw.setBirth(LocalDate.parse(withdrawFormDto.getBirth()));
         withdraw.setReason(withdrawFormDto.getReason());
         return withdraw;
     }

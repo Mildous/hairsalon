@@ -6,6 +6,7 @@ import com.ubn.hairsalon.member.entity.Member;
 import com.ubn.hairsalon.reserve.constant.ReserveStatus;
 import com.ubn.hairsalon.reserve.constant.ServiceStatus;
 import com.ubn.hairsalon.reserve.dto.ReserveFormDto;
+import com.ubn.hairsalon.review.entity.Review;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import java.time.LocalTime;
 public class Reserve extends BaseEntity {
 
     @Id
-    @Column(name = "rsv_id")
+    @Column(name = "reserve_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -54,6 +55,8 @@ public class Reserve extends BaseEntity {
     @Column(nullable = false)
     private String reviewYn;
 
+    @OneToOne(mappedBy = "reserve", cascade = CascadeType.PERSIST)
+    private Review review;
 
     public static Reserve createReserve(Member member, Type type, ReserveFormDto reserveFormDto) {
         Reserve reserve = new Reserve();
@@ -74,6 +77,10 @@ public class Reserve extends BaseEntity {
         this.rsvDate = LocalDate.parse(reserveFormDto.getRsvDate());
         this.rsvStartTime = LocalTime.parse(reserveFormDto.getRsvStartTime());
         this.rsvEndTime = LocalTime.parse(reserveFormDto.getRsvEndTime());
+    }
+
+    public void removePersonalData() {
+        this.member = null;
     }
 
 }

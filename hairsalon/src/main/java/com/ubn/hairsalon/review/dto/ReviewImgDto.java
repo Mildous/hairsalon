@@ -18,7 +18,7 @@ public class ReviewImgDto {
 
     private String repImgYn;
 
-    private static ModelMapper modelMapper;
+    private static ModelMapper modelMapper = new ModelMapper();
 
     public static ReviewImgDto of(ReviewImg reviewImg) {
         return modelMapper.map(reviewImg, ReviewImgDto.class);

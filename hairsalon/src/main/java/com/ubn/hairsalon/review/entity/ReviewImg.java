@@ -1,20 +1,20 @@
 package com.ubn.hairsalon.review.entity;
 
 import com.ubn.hairsalon.config.entity.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "review_img")
-@Data @EqualsAndHashCode(callSuper = true)
+@Getter @Setter
 public class ReviewImg extends BaseEntity {
 
     @Id
     @Column(name = "review_img_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long imgId;
 
     private String imgName;
 
