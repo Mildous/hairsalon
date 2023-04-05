@@ -106,13 +106,15 @@
       </tr>
       <tr>
         <th scope="row">연락처</th>
-        <td th:text="${#strings.substring(reserve.member.phone, 0, 3) + '-' +
+        <td th:if="${reserve.member.phone != null}"  th:text="${#strings.substring(reserve.member.phone, 0, 3) + '-' +
                                 #strings.substring(reserve.member.phone, 3, 7) + '-' +
                                 #strings.substring(reserve.member.phone, 7)}"></td>
+        <td th:unless="${reserve.member.phone != null}">탈퇴회원</td>
       </tr>
       <tr>
         <th scope="row">생년월일</th>
-        <td th:text="${#temporals.format(reserve.member.birth, 'yyyy년 MM월 dd일')}"></td>
+        <td th:if="${reserve.member.birth != null}" th:text="${#temporals.format(reserve.member.birth, 'yyyy년 MM월 dd일')}"></td>
+        <td th:unless="${reserve.member.birth != null}">탈퇴회원</td>
       </tr>
       </tbody>
     </table>

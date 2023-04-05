@@ -2,13 +2,13 @@ package com.ubn.hairsalon.member.dto;
 
 import com.ubn.hairsalon.member.constant.BirthMax;
 import com.ubn.hairsalon.member.constant.Gender;
+import com.ubn.hairsalon.member.constant.OAuth2Provider;
 import com.ubn.hairsalon.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -42,6 +42,10 @@ public class MemberFormDto {
 
     @NotNull(message = "성별은 필수 입력사항입니다.")
     private Gender gender;
+
+    private OAuth2Provider oAuth2Provider;
+
+    private Long kakaoId;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

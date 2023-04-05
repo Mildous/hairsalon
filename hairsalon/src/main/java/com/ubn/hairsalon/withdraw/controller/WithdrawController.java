@@ -1,5 +1,6 @@
 package com.ubn.hairsalon.withdraw.controller;
 
+import com.ubn.hairsalon.member.constant.OAuth2Provider;
 import com.ubn.hairsalon.member.constant.Role;
 import com.ubn.hairsalon.member.entity.Member;
 import com.ubn.hairsalon.member.repository.MemberRepository;
@@ -55,6 +56,7 @@ public class WithdrawController {
             member.setPhone(null);
             member.setBirth(null);
             member.setPassword(null);
+            member.setKakaoId(null);
             member.setRole(Role.WITHDRAW);
             memberRepository.save(member);
 

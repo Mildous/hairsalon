@@ -108,4 +108,5 @@ public class MemberService implements UserDetailsService {
             reserve.removePersonalData();
         }
     }
+
 }

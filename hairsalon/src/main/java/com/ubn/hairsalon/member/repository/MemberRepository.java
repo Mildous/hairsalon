@@ -13,4 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, QuerydslP
     @Modifying
     @Query("update Member m set m.memo = :memo where m.id = :id")
     int updateMemoById(@Param("memo") String memo, @Param("id") Long id);
+
+    Member findByKakaoId(Long kakaoId);
 }
