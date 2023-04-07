@@ -83,7 +83,7 @@
     </table>
 
     <button type="button" class="btn btn-primary btn-lg btn-block update-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}" th:href="'/members/reserved/' + ${reserve.id}">수정</button>
-    <button type="button" class="btn btn-light btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}" th:onclick="'javascript:deleteReserved(' + ${reserve.id} + ');'">취소</button>
+    <button type="button" class="btn btn-danger btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}" th:onclick="'javascript:deleteReserved(' + ${reserve.id} + ');'">취소</button>
     <button type="button" class="btn btn-success btn-lg btn-block review-btn"
       th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
       reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
@@ -92,7 +92,7 @@
             th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and
       reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).COMPLETED and
       reserve.reviewYn == 'Y'}" th:onclick="'javascript:loadModalReviewInfo(' + ${reserve.id} + ');'">나의 리뷰 보기</button>
-    <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/members/reserved/list'|">목록으로</button>
+    <button type="button" class="btn btn-light btn-lg btn-block" onclick="history.back()">목록으로</button>
   </form>
 </div>
 

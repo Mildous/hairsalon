@@ -122,7 +122,7 @@
     <button type="button" class="btn btn-danger btn-lg btn-block reject-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).WAITING and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">거절</button>
     <button type="button" class="btn btn-success btn-lg btn-block complete-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">시술완료</button>
     <button type="button" class="btn btn-danger btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">시술취소</button>
-    <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/admin/reserved/list'|">목록으로</button>
+    <button type="button" class="btn btn-light btn-lg btn-block" onclick="history.back()">목록으로</button>
   </form>
 
 </div>

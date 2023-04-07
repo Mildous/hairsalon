@@ -51,7 +51,7 @@ public class MemberController {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             memberService.saveMember(member);
         } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", "등록 중 오류가 발생하였습니다.");
+            model.addAttribute("errorMessage", e.getMessage());
             return "members/joinForm";
         }
 

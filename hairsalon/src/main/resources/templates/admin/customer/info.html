@@ -14,7 +14,7 @@
   <script th:inline="javascript">
     $(document).ready(function() {
       $('#submit-btn').click(function() {
-        if (confirm("메모를 수정하시겠습니까?")) {
+        if (confirm("메모를 등록하시겠습니까?")) {
           var token = $("meta[name='_csrf']").attr("content");
           var header = $("meta[name='_csrf_header']").attr("content");
           var id = $('input[name="memberId"]').val();
@@ -118,8 +118,9 @@
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#memoModal">메모수정</button>
-    <button type="button" class="btn btn-light btn-lg btn-block" th:onclick="|location.href='/admin/customer/list'|">목록으로</button>
+    <button type="button" th:if="${member.memo == null or member.memo == ''}" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#memoModal">메모등록</button>
+    <button type="button" th:if="${member.memo != null and member.memo != ''}"class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#memoModal">메모수정</button>
+    <button type="button" class="btn btn-light btn-lg btn-block" onclick="history.back()">목록으로</button>
   </form>
 
 </div>

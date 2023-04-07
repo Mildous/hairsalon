@@ -24,7 +24,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     private ReviewRepositoryCustomImpl(EntityManager em) { this.queryFactory = new JPAQueryFactory(em); }
 
     private BooleanExpression searchTypeNameEq(String searchTypeName) {
-        return searchTypeName == null ? null : QReview.review.reserve.type.typeName.eq(searchTypeName);
+        return StringUtils.isEmpty(searchTypeName) ? null : QReview.review.reserve.type.typeName.eq(searchTypeName);
     }
 
     private BooleanExpression searchGenderEq(Gender searchGender) {
