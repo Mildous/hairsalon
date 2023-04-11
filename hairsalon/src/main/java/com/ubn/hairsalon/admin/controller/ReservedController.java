@@ -54,6 +54,8 @@ public class ReservedController {
             map.put("title", reserves.get(i).getMember().getName() + " [" + reserves.get(i).getType().getTypeName() + "] ");
             map.put("start", reserves.get(i).getRsvDate() + "T" + reserves.get(i).getRsvStartTime());
             map.put("end", reserves.get(i).getRsvDate() + "T" + reserves.get(i).getRsvEndTime());
+            map.put("status", reserves.get(i).getReserveStatus());
+            map.put("reserveId", reserves.get(i).getId());
             result.add(map);
         }
         return result;

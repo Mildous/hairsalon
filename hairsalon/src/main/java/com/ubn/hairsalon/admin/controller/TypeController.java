@@ -33,6 +33,7 @@ public class TypeController {
     @PostMapping(value = "/new")
     public String typeForm(@Valid TypeFormDto typeFormDto, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
+            model.addAttribute("now", "type");
             return "admin/type/typeForm";
         }
         try {
@@ -72,6 +73,7 @@ public class TypeController {
     @PostMapping(value = "/{typeId}")
     public String typeUpdate(@Valid TypeFormDto typeFormDto, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
+            model.addAttribute("now", "type");
             return "admin/type/typeForm";
         }
         try {

@@ -91,6 +91,7 @@ public class Member extends BaseEntity implements UserDetails {
         this.gender = null;
         this.password = null;
         this.kakaoId = null;
+        this.email = null;
         this.role = Role.WITHDRAW;
 
         // Remove personal data from all reserve entities

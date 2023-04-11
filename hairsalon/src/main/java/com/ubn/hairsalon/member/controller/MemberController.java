@@ -60,7 +60,7 @@ public class MemberController {
 
     @GetMapping(value = "/login")
     public String loginMember(Model model) {
-        model.addAttribute("now", "login");
+        model.addAttribute("now5", "login");
         return "members/login";
     }
 

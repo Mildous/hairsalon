@@ -77,10 +77,10 @@
     </div>
 
     <div th:if="${#strings.isEmpty(typeFormDto.typeId)}" style="text-align: center;">
-      <button th:formaction="@{/admin/type/new}" type="submit" class="btn btn-primary mt-3">Submit</button>
+      <button th:formaction="@{/admin/type/new}" type="submit" class="btn btn-primary mt-3" onclick="return confirm('등록하시겠습니까?')">Submit</button>
     </div>
     <div th:unless="${#strings.isEmpty(typeFormDto.typeId)}" style="text-align: center;">
-      <button th:formaction="@{'/admin/type/' + ${typeFormDto.typeId} }" type="submit" class="btn btn-success mt-3">Update</button>
+      <button th:formaction="@{'/admin/type/' + ${typeFormDto.typeId} }" type="submit" class="btn btn-success mt-3" onclick="return confirm('수정하시겠습니까?')">Update</button>
     </div>
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
   </form>

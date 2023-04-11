@@ -57,6 +57,7 @@ public class WithdrawController {
             member.setBirth(null);
             member.setPassword(null);
             member.setKakaoId(null);
+            member.setEmail(null);
             member.setRole(Role.WITHDRAW);
             memberRepository.save(member);
 

@@ -54,6 +54,17 @@
           dataType: "json"
         });
         request.done(function (data){
+          var events = data.map(function (event) {
+            if(event.status === "WAITING") {
+              event.backgroundColor = "#6c757d";
+            } else if(event.status === "COMPLETED") {
+              event.backgroundColor = "#007bff";
+            }
+            // reserveId 추가
+            event.extendedProps = event.extendedProps || {};
+            event.extendedProps.reserveId = event.reserveId;
+            return event;
+          })
           console.log(data);
           // calendar element 취득
           var calendarEl = $('#calendar')[0];
@@ -75,7 +86,11 @@
             nowIndicator: true, // 현재 시간 마크
             dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
             locale: 'ko', // 한국어 설정
-            events: data
+            events: events,
+            eventClick: function(info) {
+              var reserveId = info.event.extendedProps.reserveId;
+              location.href = "/admin/reserved/info/" + reserveId;
+            }
           });
           // 캘린더 랜더링
           calendar.render();

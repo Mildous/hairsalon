@@ -37,7 +37,7 @@ public class MemberReservedController {
     private final ReserveRepository reserveRepository;
 
     // 회원의 예약정보 목록
-    @GetMapping(value = "/list")
+    @GetMapping(value = {"/list", "/list/{page}"})
     public String reservedMember(Principal principal, Model model, @PathVariable("page") Optional<Integer> page) {
         String email = principal.getName();
         Member member = memberRepository.findByEmail(email);
@@ -65,6 +65,7 @@ public class MemberReservedController {
         }
         Reserve reserve = reserveOptional.get();
         model.addAttribute("reserve", reserve);
+        model.addAttribute("now", "profile");
         return false;
     }
 

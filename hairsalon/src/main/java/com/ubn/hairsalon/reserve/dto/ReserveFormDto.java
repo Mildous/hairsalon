@@ -26,6 +26,8 @@ public class ReserveFormDto {
 
     private String rsvEndTime;
 
+    private String typeName;
+
     private static ModelMapper modelMapper = new ModelMapper();
 
     public static ReserveFormDto of(Reserve reserve) {

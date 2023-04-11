@@ -71,7 +71,7 @@ public class ReserveRepositoryCustomImpl implements ReserveRepositoryCustom {
                         searchReserveStatusEq(reservedSearchDto.getStatus()),
                         searchGenderEq(reservedSearchDto.getGender()),
                         searchByMemberLike((reservedSearchDto.getBy()), reservedSearchDto.getQuery()))
-                .orderBy(QReserve.reserve.rsvDate.asc())
+                .orderBy(QReserve.reserve.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -94,7 +94,7 @@ public class ReserveRepositoryCustomImpl implements ReserveRepositoryCustom {
         List<Reserve> reserves = queryFactory
                 .selectFrom(QReserve.reserve)
                 .where(searchMemberIdEq(member.getId()))
-                .orderBy(QReserve.reserve.rsvDate.asc())
+                .orderBy(QReserve.reserve.modifiedDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

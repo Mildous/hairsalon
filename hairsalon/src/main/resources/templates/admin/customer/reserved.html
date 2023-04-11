@@ -21,6 +21,10 @@
         location.href = "/members/reserved/del/" + id;
       }
     }
+    function page(page) {
+      var memberId = [[${memberId}]];
+      location.href="/admin/customer/reserved/"+ memberId + "/" + page;
+    }
   </script>
 </th:block>
 
