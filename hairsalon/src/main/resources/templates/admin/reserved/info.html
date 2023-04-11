@@ -77,10 +77,24 @@
 
 <div layout:fragment="content">
 
-  <h4 class="mb-4">예약정보</h4>
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/reserved/list">예약목록</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/reserved/calendar">캘린더</a>
+    </li>
+  </ul>
+
+  <div class="my-3">
   <form action="/admin/reserved/info" role="form" method="get" th:object="${reserve}">
     <input type="hidden" id="reserveId" th:value="${reserve.id}">
     <table class="table table-borderless table-dark">
+      <thead>
+      <tr>
+        <th colspan="2"><h4>Reservation Info</h4></th>
+      </tr>
+      </thead>
       <tbody>
       <tr>
         <th scope="row" class="col-md-2">상태</th>
@@ -124,7 +138,7 @@
     <button type="button" class="btn btn-danger btn-lg btn-block cancel-btn" th:if="${reserve.reserveStatus == T(com.ubn.hairsalon.reserve.constant.ReserveStatus).COMPLETED and reserve.serviceStatus == T(com.ubn.hairsalon.reserve.constant.ServiceStatus).WAITING}">시술취소</button>
     <button type="button" class="btn btn-light btn-lg btn-block" onclick="history.back()">목록으로</button>
   </form>
-
+  </div>
 </div>
 
 </html>

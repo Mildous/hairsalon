@@ -33,13 +33,10 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
     private LocalDate birth;
 
     @Column(nullable = false)
@@ -88,10 +85,8 @@ public class Member extends BaseEntity implements UserDetails {
     public void withdraw(String reason) {
         this.phone = null;
         this.birth = null;
-        this.gender = null;
         this.password = null;
         this.kakaoId = null;
-        this.email = null;
         this.role = Role.WITHDRAW;
 
         // Remove personal data from all reserve entities

@@ -45,7 +45,9 @@
       </tr>
       <tr>
         <th scope="row">Phone</th>
-        <td th:text="${member.phone}"></td>
+        <td th:text="${#strings.substring(member.phone, 0, 3) + '-' +
+                                #strings.substring(member.phone, 3, 7) + '-' +
+                                #strings.substring(member.phone, 7)}"></td>
       </tr>
       <tr>
         <th scope="row">Birth</th>
