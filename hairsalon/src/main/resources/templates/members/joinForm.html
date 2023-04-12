@@ -80,10 +80,10 @@
     </div>
 
     <div th:if="${#strings.isEmpty(memberFormDto.id)}" style="text-align: center">
-      <button th:formaction="@{/members/new}" type="submit" class="btn btn-primary mt-3">Submit</button>
+      <button th:formaction="@{/members/new}" type="submit" class="btn btn-primary mt-3" onclick="return confirm('이 정보로 가입하시겠습니까?')">Submit</button>
     </div>
     <div th:unless="${#strings.isEmpty(memberFormDto.id)}" style="text-align: center">
-      <button th:formaction="@{'/members/profile/edit/' + ${memberFormDto.id} }" type="submit" class="btn btn-primary">Update</button>
+      <button th:formaction="@{'/members/profile/edit/' + ${memberFormDto.id} }" type="submit" class="btn btn-primary" onclick="return confirm('이 정보로 수정하시겠습니까?')">Update</button>
     </div>
 
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
